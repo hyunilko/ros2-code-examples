@@ -7,11 +7,9 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
 
   std::shared_ptr<SimpleTFListenerNode> node = std::make_shared<SimpleTFListenerNode>();
-
+    // auto node = std::make_shared<SimpleTFListenerNode>();
   rclcpp::spin(node);
 
   rclcpp::shutdown();
   return 0;
 }
-
-

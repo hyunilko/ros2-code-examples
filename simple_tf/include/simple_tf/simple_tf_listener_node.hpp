@@ -12,7 +12,7 @@ public:
   SimpleTFListenerNode(std::string name = "simple_tf_listener");
 
 private:
-
+  void lookupTransform();
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
   std::shared_ptr<tf2_ros::Buffer> tf_buffer_;
 };
