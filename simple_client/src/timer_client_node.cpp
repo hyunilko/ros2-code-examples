@@ -25,19 +25,22 @@ TimerClientNode::TimerClientNode(std::string name) : Node(name)
     RCLCPP_INFO(this->get_logger(), "Client created!!");
 }
 
-
 void TimerClientNode::make_request()
 {
-
     _request_sent_time = std::chrono::high_resolution_clock::now();
 
     std::shared_ptr<GetImageSrv::Request> request = std::make_shared<GetImageSrv::Request>();
 
-    rclcpp::Client<GetImageSrv>::SharedFuture result_future = _client->async_send_request(request,
+    // Call async_send_request and capture the result
+    auto result = _client->async_send_request(request,
         std::bind(&TimerClientNode::response_received_callback, this, std::placeholders::_1));
 
+    // Access the shared future from the result
+    auto result_future = result.future; // Use .future to get the shared future
 
+    // Now you can use result_future as needed
 }
+
 
 
 void TimerClientNode::response_received_callback(rclcpp::Client<GetImageSrv>::SharedFuture result_future)

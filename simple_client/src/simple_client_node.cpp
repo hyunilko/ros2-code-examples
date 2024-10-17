@@ -34,19 +34,19 @@ void SimpleClientNode::run_request_loop()
         request->res_w = 480;
         request->res_h = 320;
 
-        rclcpp::Client<GetImageSrv>::SharedFuture result_future = _client->async_send_request(request);
-        if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), result_future) !=
-            rclcpp::executor::FutureReturnCode::SUCCESS){
-            RCLCPP_ERROR(this->get_logger(), "Service call failed :(");
-            assert(0);
-        }
+        _client->async_send_request(
+            request,
+            [this, t1](rclcpp::Client<GetImageSrv>::SharedFuture future_response) {
+                std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+                auto request_duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
-        std::shared_ptr<GetImageSrv::Response> response = result_future.get();
-
-        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-        auto request_duration = std::chrono::duration_cast<std::chrono::microseconds>( t2 - t1 ).count();
-
-        RCLCPP_INFO(this->get_logger(), "Got response in %ld microseconds", request_duration);
+                auto response = future_response.get();
+                if (response) {
+                    RCLCPP_INFO(this->get_logger(), "Got response in %ld microseconds", request_duration);
+                } else {
+                    RCLCPP_ERROR(this->get_logger(), "Service call failed :(");
+                }
+            });
 
         loop_rate.sleep();
     }

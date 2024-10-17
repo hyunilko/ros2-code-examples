@@ -3,36 +3,29 @@
 
 SimpleParameterServerNode::SimpleParameterServerNode() : Node("simple_parameters_server")
 {
-
     RCLCPP_INFO(this->get_logger(), "Parameters Server created!!");
 
     this->parameters_init();
 
-    auto existing_callback = this->set_on_parameters_set_callback(nullptr);
+    // Use add_on_set_parameters_callback instead of set_on_parameters_set_callback
     auto param_change_callback =
-      [this, existing_callback](std::vector<rclcpp::Parameter> parameters)
+      [this](std::vector<rclcpp::Parameter> parameters)
       {
         auto result = rcl_interfaces::msg::SetParametersResult();
-        // first call the existing callback, if there was one
-        if (nullptr != existing_callback) {
-          result = existing_callback(parameters);
-          // if the existing callback failed, go ahead and return the result
-          if (!result.successful) {
-            return result;
-          }
-        }
         result.successful = true;
+
         for (auto parameter : parameters) {
           rclcpp::ParameterType parameter_type = parameter.get_type();
+
           if (rclcpp::ParameterType::PARAMETER_NOT_SET == parameter_type) {
             RCLCPP_WARN(this->get_logger(),
               "Trying to delete parameter '%s'. Deleting parameters is not allowed",
               parameter.get_name().c_str()
             );
             result.successful = false;
-            result.reason = "parameter \'"+parameter.get_name()+"\' cannot be deleted";
+            result.reason = "parameter \'" + parameter.get_name() + "\' cannot be deleted";
           } else {
-            // Here I handle special parameters with special conditions
+            // Handle special parameters with special conditions
             if (parameter.get_name().compare("wheels.magic") == 0) {
               if (rclcpp::ParameterType::PARAMETER_INTEGER != parameter_type) {
                 RCLCPP_WARN(this->get_logger(),
@@ -40,14 +33,14 @@ SimpleParameterServerNode::SimpleParameterServerNode() : Node("simple_parameters
                   parameter.get_name().c_str()
                 );
                 result.successful = false;
-                result.reason = "parameter \'"+parameter.get_name()+"\' must be an integer";
-              } else if (parameter.as_int() != 2 && parameter.as_int() % 42 !=0) {
+                result.reason = "parameter \'" + parameter.get_name() + "\' must be an integer";
+              } else if (parameter.as_int() != 2 && parameter.as_int() % 42 != 0) {
                 RCLCPP_WARN(this->get_logger(),
                   "Trying to set parameter '%s' to a not allowed value",
                   parameter.get_name().c_str()
                 );
                 result.successful = false;
-                result.reason = "parameter \'"+parameter.get_name()+"\' accepts only 2 or multiple of 42 values";
+                result.reason = "parameter \'" + parameter.get_name() + "\' accepts only 2 or multiple of 42 values";
               } else {
                 result.successful &= true;
               }
@@ -58,32 +51,34 @@ SimpleParameterServerNode::SimpleParameterServerNode() : Node("simple_parameters
                   parameter.get_name().c_str()
                 );
                 result.successful = false;
-                result.reason = "parameter \'"+parameter.get_name()+"\' must be an integer array";
+                result.reason = "parameter \'" + parameter.get_name() + "\' must be an integer array";
               } else if (parameter.as_integer_array().size() != 2) {
                 RCLCPP_WARN(this->get_logger(),
                   "Trying to set parameter '%s' not with 2 values",
                   parameter.get_name().c_str()
                 );
                 result.successful = false;
-                result.reason = "parameter \'"+parameter.get_name()+"\' requires 2 integer values to be specified";
+                result.reason = "parameter \'" + parameter.get_name() + "\' requires 2 integer values to be specified";
               } else if (parameter.as_integer_array()[0] != 42 && parameter.as_integer_array()[1] != 42) {
                 RCLCPP_WARN(this->get_logger(),
                   "Trying to set parameter '%s' with none of the values being 42",
                   parameter.get_name().c_str()
                 );
                 result.successful = false;
-                result.reason = "parameter \'"+parameter.get_name()+"\' one of the two values must be 42";
+                result.reason = "parameter \'" + parameter.get_name() + "\' one of the two values must be 42";
               } else {
                 result.successful &= true;
               }
             }
           }
         }
+
         return result;
       };
-    this->set_on_parameters_set_callback(param_change_callback);
-}
 
+    // Register the callback using add_on_set_parameters_callback
+    this->add_on_set_parameters_callback(param_change_callback);
+}
 
 void SimpleParameterServerNode::parameters_init()
 {

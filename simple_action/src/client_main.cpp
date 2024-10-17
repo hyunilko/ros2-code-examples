@@ -85,13 +85,14 @@ private:
   rclcpp::TimerBase::SharedPtr timer_;
   bool goal_done_;
 
-  void goal_response_callback(std::shared_future<GoalHandleFibonacci::SharedPtr> future)
+  // Change the parameter type for goal_response_callback
+  void goal_response_callback(std::shared_ptr<GoalHandleFibonacci> goal_handle)
   {
-    auto goal_handle = future.get();
     if (!goal_handle) {
       RCLCPP_ERROR(this->get_logger(), "Goal was rejected by server");
     } else {
       RCLCPP_INFO(this->get_logger(), "Goal accepted by server, waiting for result");
+      // Optionally, you could start tracking the goal handle if needed.
     }
   }
 
@@ -127,6 +128,7 @@ private:
       RCLCPP_INFO(this->get_logger(), "%" PRId64, number);
     }
   }
+
 };  // class MinimalActionClient
 
 int main(int argc, char ** argv)

@@ -28,7 +28,7 @@ void SimpleParameterClientNode::get_parameters()
     "wheels.radius"
   });
 
-  if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), get_parameters_result) != rclcpp::executor::FutureReturnCode::SUCCESS){
+  if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), get_parameters_result) != rclcpp::FutureReturnCode::SUCCESS){
     RCLCPP_ERROR(this->get_logger(), "get_parameters service call failed.");
     throw std::runtime_error("Not able to get parameters from server");
   }
@@ -55,7 +55,7 @@ void SimpleParameterClientNode::set_wrong_parameters()
     rclcpp::Parameter("wheels.magic", 18.2)
   });
 
-  if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), set_parameters_result) != rclcpp::executor::FutureReturnCode::SUCCESS){
+  if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), set_parameters_result) != rclcpp::FutureReturnCode::SUCCESS){
     RCLCPP_ERROR(this->get_logger(), "set_parameters service call failed.");
     throw std::runtime_error("Not able to set parameters on the server");
   }
@@ -80,7 +80,7 @@ void SimpleParameterClientNode::set_correct_parameters()
     rclcpp::Parameter("two_integers", two_integers),
   });
 
-  if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), set_parameters_result) != rclcpp::executor::FutureReturnCode::SUCCESS){
+  if (rclcpp::spin_until_future_complete(this->get_node_base_interface(), set_parameters_result) != rclcpp::FutureReturnCode::SUCCESS){
     RCLCPP_ERROR(this->get_logger(), "set_parameters service call failed.");
     throw std::runtime_error("Not able to set parameters on the server");
   }
