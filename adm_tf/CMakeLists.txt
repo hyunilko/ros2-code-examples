@@ -14,14 +14,18 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(urdf REQUIRED)
 
 set(dependencies
   rclcpp
   tf2_ros
   geometry_msgs
+  urdf
 )
 
-include_directories(include)
+include_directories(
+  include
+  )
 
 add_executable(adm_static_publisher_main src/adm_tf_static_publisher_main.cpp src/adm_tf_static_publisher_node.cpp)
 ament_target_dependencies(adm_static_publisher_main ${dependencies})
@@ -32,6 +36,11 @@ ament_target_dependencies(adm_listener_main ${dependencies})
 
 install(TARGETS adm_static_publisher_main adm_listener_main
   DESTINATION lib/${PROJECT_NAME}
+)
+
+install(FILES
+  config/morning_car.urdf
+  DESTINATION share/${PROJECT_NAME}/config
 )
 
 ament_package()

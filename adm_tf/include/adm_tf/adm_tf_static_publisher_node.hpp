@@ -11,14 +11,17 @@ public:
     AdmTFStaticPublisherNode(std::string name = "adm_tf_static_publisher");
 
 private:
-    // Function to send the transform periodically
-    void sendTransform();
-
     // Static transform broadcaster
     std::shared_ptr<tf2_ros::StaticTransformBroadcaster> _broadcaster;
 
     // Timer to trigger transform broadcasting
     rclcpp::TimerBase::SharedPtr _timer;
+
+    geometry_msgs::msg::TransformStamped transform;
+
+    void sendTransform();
+    void loadURDFAndBroadcastTransforms(const std::string & urdf_path);
+
 };
 
 #endif // __SIMPLE_TF_STATIC_PUBLISHER_NODE_HPP__

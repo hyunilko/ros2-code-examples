@@ -19,6 +19,7 @@ private:
 
     // Function to lookup transform
     void lookupTransform();
+    void TransformToRPY(geometry_msgs::msg::TransformStamped transform);
 };
 
 #endif // __SIMPLE_TF_LISTENER_NODE_HPP__
