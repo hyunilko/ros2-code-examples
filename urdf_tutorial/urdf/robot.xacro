@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<robot name = "my_first">
+
+    <!-- BASE -->
+    <link name="base_link">
+    </link>
+
+    <!-- BODY LINK -->
+    <joint name="body_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="body"/>
+    </joint>
+
+    <link name="body">
+        <visual>
+                <geometry>
+        <cylinder length="0.6" radius="0.2"/>
+      </geometry>
+        </visual>
+    </link>
+
+</robot>
