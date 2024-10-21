@@ -5,7 +5,13 @@ sudo apt install ros-humble-xacro
 ros2 pkg create --build-type ament_python urdf_tutorial
 cd urdf_tutorial
 
+rm -rf install/urdf_tutorial/ build/urdf_tutorial/
 colcon build --packages-select urdf_tutorial
 source install/local_setup.bash
 ros2 launch urdf_tutorial robot.launch.py
 
+urdf Tutorials Building a Visual Robot Model with URDF from Scratch
+https://wiki.ros.org/urdf/Tutorials/Building%20a%20Visual%20Robot%20Model%20with%20URDF%20from%20Scratch
+
+urdf_tutorial
+git clone https://github.com/ros/urdf_tutorial.git
